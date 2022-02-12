@@ -1,0 +1,34 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Bombardier": "Subsystem",
+      "/LiveWindow/Camera": "Subsystem",
+      "/LiveWindow/DriveTrain": "Subsystem",
+      "/LiveWindow/Elevator": "Subsystem",
+      "/LiveWindow/Indexer": "Subsystem",
+      "/LiveWindow/IntakeElbow": "Subsystem",
+      "/LiveWindow/IntakeWheels": "Subsystem",
+      "/LiveWindow/LimeLight": "Subsystem",
+      "/LiveWindow/NavX": "Subsystem",
+      "/LiveWindow/RangeSensors": "Subsystem",
+      "/LiveWindow/Shooter": "Subsystem",
+      "/LiveWindow/Turret": "Subsystem",
+      "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "CameraPublisher": {
+      "USB Camera 0": {
+        "open": true
+      },
+      "open": true
+    },
+    "LiveWindow": {
+      "open": true
+    }
+  }
+}
