@@ -13,11 +13,12 @@ import frc.robot.Constants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class IntakeWheels extends SubsystemBase {
 
-  private static final CANSparkMax sparkMax = new CANSparkMax(Constants.IntakeConstants.IntakeWheelsSpark, MotorType.kBrushless); 
+  private static final CANSparkMax sparkMax = new CANSparkMax(Constants.IntakeConstants.IntakeWheelsSparkMax, MotorType.kBrushless); 
   private boolean wheelsOn;
   /**
    * Creates a new IntakeWheels.
@@ -27,11 +28,17 @@ public class IntakeWheels extends SubsystemBase {
     sparkMax.restoreFactoryDefaults();
     sparkMax.clearFaults();
     sparkMax.setInverted(false);
-    sparkMax.setSecondaryCurrentLimit(10);
     sparkMax.setSmartCurrentLimit(40, 20, 10);
     sparkMax.enableVoltageCompensation(12);
     sparkMax.setIdleMode(IdleMode.kBrake);
-    sparkMax.setOpenLoopRampRate(1.5);
+    sparkMax.setClosedLoopRampRate(1.5);
+    sparkMax.setSecondaryCurrentLimit(120, 30);
+
+    sparkMax.setSoftLimit(SoftLimitDirection.kForward, 30);
+    sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+    sparkMax.setSoftLimit(SoftLimitDirection.kReverse, 30);
+    sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+
 
     wheelsOn = false; 
   }

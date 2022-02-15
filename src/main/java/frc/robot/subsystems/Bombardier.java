@@ -84,7 +84,7 @@ public class Bombardier extends SubsystemBase {
     m_LimeLight.ledOn();
     m_Turret.targetingEnabled(m_LimeLight.getXOffset());
     if (m_Turret.onTarget() && m_LimeLight.hasValidTarget()) {
-      m_Shooter.on(m_LimeLight.getDistanceToTarget());
+      m_Shooter.on(m_LimeLight.getDistance());
       if (m_Shooter.readyToShoot()) {
         m_Indexer.shoot();
         // m_IntakeWheels.on();

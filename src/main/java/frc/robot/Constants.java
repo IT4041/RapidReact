@@ -76,12 +76,12 @@ public class Constants {
 
     public static final class FalconDriveConstants {
 
-        public static final int FrontRightTalon = 20; // PDP:13
-        public static final int FrontLeftTalon = 23; // PDP:1
-        public static final int BackRightTalon = 22; // PDP:14
-        public static final int BackLeftTalon = 21; // PDP:13
-        public static final int TopRightTalon = 24; // PDP:3
-        public static final int TopLeftTalon = 25; // PDP:2
+        public static final int FrontRightTalon = 45; // PDP:13
+        public static final int FrontLeftTalon = 46; // PDP:1
+        public static final int BackRightTalon = 41; // PDP:14
+        public static final int BackLeftTalon = 42; // PDP:13
+        public static final int TopRightTalon = 40; // PDP:3
+        public static final int TopLeftTalon = 44; // PDP:2
 
         public static final double wheelcircumference = 0.49149; // meters
         public static final double cpr = 2048; // count per rotation for talonFX integrated encoder
@@ -110,13 +110,13 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int IntakeElbowSparkMax = 30;
-        public static final int IntakeWheelsSpark = 7;
+        public static final int IntakeElbowSparkMax = 6;
+        public static final int IntakeWheelsSparkMax = 7;
     }
 
 	public static final class RangeSensorConstants {
-        public static final int TimeOfFlightLiftBottom = 88;
-        public static final int TimeOfFlightLiftTop = 89;
+        public static final int TimeOfFlightLiftBottom = 89;
+        public static final int TimeOfFlightLiftTop = 88;
     }
 
     public static final class IndexerConstants {

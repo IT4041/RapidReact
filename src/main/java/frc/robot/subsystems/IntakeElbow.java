@@ -13,6 +13,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class IntakeElbow extends SubsystemBase {
@@ -47,6 +49,7 @@ public class IntakeElbow extends SubsystemBase {
      * CANSparkMax object
      */
     pidController = sparkMax.getPIDController();
+    encoder = sparkMax.getEncoder();
     
     // PID coefficients
     kP = 0.025; 
@@ -69,21 +72,25 @@ public class IntakeElbow extends SubsystemBase {
     pidController.setFF(kFF);
     pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    sparkMax.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, kForwardSoftLimit);
-    sparkMax.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, kReverseSoftLimit);
+    sparkMax.setSoftLimit(SoftLimitDirection.kForward, kForwardSoftLimit);
+    sparkMax.setSoftLimit(SoftLimitDirection.kReverse, kReverseSoftLimit);
 
-    sparkMax.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-    sparkMax.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+    sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+    sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
     sparkMax.setClosedLoopRampRate(0.5);
     sparkMax.setSmartCurrentLimit(4, 30, 10);
+    sparkMax.clearFaults();
+    sparkMax.enableVoltageCompensation(12);
+    sparkMax.setIdleMode(IdleMode.kBrake);
+    sparkMax.setClosedLoopRampRate(1.5);
+    sparkMax.setSecondaryCurrentLimit(95, 250);
 
   }
 
   @Override
   public void periodic() {
-    // // This method will be called once per scheduler run
-    encoder = sparkMax.getEncoder();
+    // This method will be called once per scheduler run
     if (Math.abs(encoder.getPosition() / kReverseSoftLimit) > 0.90){
       done = true;
     }

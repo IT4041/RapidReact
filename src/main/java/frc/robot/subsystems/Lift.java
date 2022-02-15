@@ -24,10 +24,9 @@ public class Lift extends SubsystemBase {
   //private boolean okToDescend, decsending;
   private static final CANSparkMax liftLeftSparkMax = new CANSparkMax(Constants.LiftConstants.LiftLeftSparkMax, MotorType.kBrushless);
   private static final CANSparkMax liftRightSparkMax = new CANSparkMax(Constants.LiftConstants.LiftRightSSparkMax, MotorType.kBrushless);
+  
   private final SparkMaxPIDController leftSmartMaxPIDController;
   private final RelativeEncoder leftSmartMaxEncoder;
-  private final SparkMaxPIDController rightSmartMaxPIDController;
-  private final RelativeEncoder rightSmartMaxEncoder;
 
   /**
    * Creates a new lift.
@@ -56,7 +55,6 @@ public class Lift extends SubsystemBase {
     liftLeftSparkMax.clearFaults();
     liftLeftSparkMax.enableVoltageCompensation(12);
     liftLeftSparkMax.setSmartCurrentLimit(40, 20, 10);
-    liftLeftSparkMax.setOpenLoopRampRate(1.5);
     liftLeftSparkMax.setIdleMode(IdleMode.kBrake);
     liftLeftSparkMax.setSoftLimit(SoftLimitDirection.kForward, 30);
     liftLeftSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -76,28 +74,11 @@ public class Lift extends SubsystemBase {
     
 
     //configure the right lift motor
-      // liftLeftSparkMax.configPeakCurrentLimit(70, 30);
     liftRightSparkMax.clearFaults();
     liftRightSparkMax.enableVoltageCompensation(12);
     liftRightSparkMax.setSmartCurrentLimit(40, 20, 10);
-    liftRightSparkMax.setOpenLoopRampRate(1.5);
     liftRightSparkMax.setIdleMode(IdleMode.kBrake);
-    liftRightSparkMax.setSoftLimit(SoftLimitDirection.kForward, 30);
-    liftRightSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-    liftRightSparkMax.setSoftLimit(SoftLimitDirection.kReverse, 30);
-    liftRightSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    liftRightSparkMax.setClosedLoopRampRate(1.5);
-    liftRightSparkMax.setSecondaryCurrentLimit(120, 30);
-
-    //initialize Right PID and encoder
-    rightSmartMaxPIDController = liftLeftSparkMax.getPIDController();
-    rightSmartMaxEncoder = liftLeftSparkMax.getEncoder();
-    rightSmartMaxPIDController.setI(kI);
-    rightSmartMaxPIDController.setP(kP);
-    rightSmartMaxPIDController.setD(kD);
-    rightSmartMaxPIDController.setFF(kF);
-    rightSmartMaxPIDController.setSmartMotionMaxVelocity(20, 1);
-    rightSmartMaxEncoder.setInverted(true);
+    liftRightSparkMax.setSecondaryCurrentLimit(95, 250);
 
 
     //pre-flight checklist to make sure lift is all the way @ bottom
@@ -131,8 +112,6 @@ public class Lift extends SubsystemBase {
 
   private void setPosition(double position) {
     leftSmartMaxEncoder.setPosition(position);
-    //We may have to negate this, I'm hoping the invertion will take care of it.
-    rightSmartMaxEncoder.setPosition(position);
   }
 
   public void stop() {
