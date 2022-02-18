@@ -41,14 +41,10 @@ public class Turret extends SubsystemBase {
   // degress of freedom : 140 (70 left, 70 right)
   // max click offset allowed per direction : 7146 (70 * 102.083333)
 
-  private final double pulley_gr = 210/24; // turret gear ration 210/24
-  private final double gearbox_gr = 100/1; // per build team
-  private final double ppmr = 42; //pulses per motor revolution (rev neo 550 integrated encoder ppr 42)
-  private final double pptr = (pulley_gr * gearbox_gr) * ppmr; // pulses per turret revolution
-  private final double dptp = pptr/360; // degrees per turret pulse
+  private double clicksPerDegree = -2.5;
   private double m_xOffset = 0.0; // x offset reported by limelight
-  private final int maxOffset = 7146; // Maximum x offset allow
-  private final int tolerance = 100; // clicks off target
+  private final int maxOffset = 180; // Maximum x offset allow
+  private final int tolerance = 3; // clicks off target
 
   public Turret() {
 
@@ -57,19 +53,19 @@ public class Turret extends SubsystemBase {
     m_turretSparkMax.setSmartCurrentLimit(40, 20, 10);
     m_turretSparkMax.enableVoltageCompensation(12);
     m_turretSparkMax.setIdleMode(IdleMode.kBrake);
-    m_turretSparkMax.setClosedLoopRampRate(1.5);
+    m_turretSparkMax.setClosedLoopRampRate(1);
 
     m_encoder = m_turretSparkMax.getEncoder();
     pidController = m_turretSparkMax.getPIDController();
 
     pidController.setFeedbackDevice(m_encoder);
 
-    pidController.setP(1.5 ,0);
+    pidController.setP(0.021 ,0);
     pidController.setI(0.0, 0);
-    pidController.setD(0.0, 0);
+    pidController.setD(0.001, 0);
     pidController.setIZone(0.0, 0);
     pidController.setFF(0.0, 0);
-    pidController.setOutputRange(-.5, .5, 0);
+    pidController.setOutputRange(-1, 1, 0);
 
     m_turretSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
     m_turretSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
@@ -102,6 +98,8 @@ public class Turret extends SubsystemBase {
       //if target positions is greater than 90 return 90 with the proper sign(+/-)
       //current = Math.abs(current) <= maxOffset ? current : (Math.signum(current) * maxOffset);
       // 2.) update pid setpoint to new position
+
+      //TODO:restore calculation
       pidController.setReference(current, ControlType.kPosition);
       
       // 4.) update current positoin to position after adjustment and delay
@@ -136,15 +134,18 @@ public class Turret extends SubsystemBase {
   // vision functions *******************************************************************
   private double trackTarget()
   {
-    SmartDashboard.putNumber("m_xOffset * dptp", m_xOffset * dptp);
+    SmartDashboard.putNumber("m_xOffset * dptp", m_xOffset * clicksPerDegree);
     // TrackTarget returns the offset to the target in turret pulses (+/-)  
-    return m_xOffset * dptp;
+    return m_xOffset * clicksPerDegree;
     
   }
 
   public boolean onTarget(){
     // is the pid reporting that on the setpoint within the tolerance
+    
+    //TODO:restore calculation
     return Math.abs(pidController.getSmartMotionAllowedClosedLoopError(0)) < tolerance;
+    // return true;
   }
 
   // end vision functions *******************************************************************

@@ -104,14 +104,15 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final int ShooterSparkMax1 = 31; 
-        public static final int ShooterSparkMax2 = 32;
+        public static final int ShooterSparkMax1 = 4; 
+        public static final int ShooterSparkMax2 = 5;
 
     }
 
     public static final class IntakeConstants {
-        public static final int IntakeElbowSparkMax = 6;
-        public static final int IntakeWheelsSparkMax = 7;
+        public static final int IntakeElbowSparkMax = 10;
+        public static final int IntakeWheelsSparkMax = 6;
+        public static final int IntakeFeederSparkMax = 9;
     }
 
 	public static final class RangeSensorConstants {
@@ -124,8 +125,8 @@ public class Constants {
 	}
 
 	public static final class LiftConstants {
-        public static final int LiftLeftSparkMax = 5;
-        public static final int LiftRightSSparkMax = 3;
+        public static final int LiftLeftSparkMax = 11;
+        public static final int LiftRightSSparkMax = 8;
     }
 
 }

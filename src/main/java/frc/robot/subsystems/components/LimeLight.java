@@ -76,7 +76,9 @@ public class LimeLight extends SubsystemBase {
   }
 
   public boolean hasValidTarget() {
+    //TODO:restore calculation
     return tv >= 1.0;
+    // return true;
   }
 
   public double getXOffset() {
@@ -117,7 +119,7 @@ public class LimeLight extends SubsystemBase {
     double distance;
     double angle;
     double cameraAngle = 22; // degrees
-    double cameraHeight = 27; // inches(get correct value from build team)
+    double cameraHeight = 17.5; // inches(get correct value from build team)
     double targetHeight = 103; // inches (center of targets; targets are 2" tall from 102" to 104")
 
     // double distance = (targetHeight - cameraHeight) / Math.tan(Math.toRadians(CameraAngle + YOffset))

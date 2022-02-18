@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +24,8 @@ import frc.robot.subsystems.components.NavX;
 
 public class DriveTrain extends SubsystemBase {
 
+  boolean isAuto = DriverStation.isAutonomous();
+
   // declare the motor crontrollers
   public final WPI_TalonFX frontRightTalon = new WPI_TalonFX(FalconDriveConstants.FrontRightTalon);
   public final WPI_TalonFX frontLeftTalon = new WPI_TalonFX(FalconDriveConstants.FrontLeftTalon);
@@ -35,10 +38,12 @@ public class DriveTrain extends SubsystemBase {
   private NavX m_NavX;
 
   // The motors on the left side of the drive.
-  private final MotorControllerGroup m_leftMotors = new MotorControllerGroup(frontLeftTalon, backLeftTalon, topLeftTalon);
+  private final MotorControllerGroup m_leftMotors = new MotorControllerGroup(frontLeftTalon, backLeftTalon,
+      topLeftTalon);
 
   // The motors on the right side of the drive.
-  private final MotorControllerGroup m_rightMotors = new MotorControllerGroup(frontRightTalon, backRightTalon, topRightTalon);
+  private final MotorControllerGroup m_rightMotors = new MotorControllerGroup(frontRightTalon, backRightTalon,
+      topRightTalon);
 
   // The robot's drive
   private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
@@ -49,15 +54,18 @@ public class DriveTrain extends SubsystemBase {
   // Network tables for odometry logging
   private NetworkTableEntry m_xEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("X");
   private NetworkTableEntry m_yEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Y");
-  private NetworkTableEntry m_LeftEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Left");
-  private NetworkTableEntry m_RightEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Right");
-  private NetworkTableEntry m_RotEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Rotation");
+  private NetworkTableEntry m_LeftEntry = NetworkTableInstance.getDefault().getTable("troubleshooting")
+      .getEntry("Left");
+  private NetworkTableEntry m_RightEntry = NetworkTableInstance.getDefault().getTable("troubleshooting")
+      .getEntry("Right");
+  private NetworkTableEntry m_RotEntry = NetworkTableInstance.getDefault().getTable("troubleshooting")
+      .getEntry("Rotation");
 
   private int counter = 0;
 
   /** Creates a new DriveSubsystem. */
-  public DriveTrain(NavX in_navX){
-     
+  public DriveTrain(NavX in_navX) {
+
     m_NavX = in_navX;
 
     frontRightTalon.setNeutralMode(NeutralMode.Coast);
@@ -79,7 +87,7 @@ public class DriveTrain extends SubsystemBase {
     backLeftTalon.configSupplyCurrentLimit(supConfig);
     topRightTalon.configSupplyCurrentLimit(supConfig);
     topLeftTalon.configSupplyCurrentLimit(supConfig);
-    
+
     frontRightTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
     frontLeftTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
     backRightTalon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
@@ -95,21 +103,22 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // Update the odometry in the periodic block
-    m_odometry.update(m_NavX.getRotation2d(), this.getLeftDistance(), this.getRightDistance());
+    if (DriverStation.isAutonomous()) {
+      // Update the odometry in the periodic block
+      m_odometry.update(m_NavX.getRotation2d(), this.getLeftDistance(), this.getRightDistance());
 
-    if(counter % 100 == 0){
-      var translation = m_odometry.getPoseMeters().getTranslation();
-      m_xEntry.setNumber(translation.getX());
-      m_yEntry.setNumber(translation.getY());
+      if (counter % 100 == 0) {
+        var translation = m_odometry.getPoseMeters().getTranslation();
+        m_xEntry.setNumber(translation.getX());
+        m_yEntry.setNumber(translation.getY());
 
-      m_LeftEntry.setNumber(this.getLeftDistance());
-      m_RightEntry.setNumber(this.getRightDistance());
+        m_LeftEntry.setNumber(this.getLeftDistance());
+        m_RightEntry.setNumber(this.getRightDistance());
 
-      Rotation2d rot = m_NavX.getRotation2d();
-      m_RotEntry.setNumber(rot.getDegrees());
+        Rotation2d rot = m_NavX.getRotation2d();
+        m_RotEntry.setNumber(rot.getDegrees());
+      }
     }
-
   }
 
   /**
@@ -129,8 +138,10 @@ public class DriveTrain extends SubsystemBase {
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
 
     // raw sensor per 100ms, scale to meters per sec
-    double leftRate = topLeftTalon.getSelectedSensorVelocity() * (10.0 / Constants.FalconDriveConstants.cpr) * Constants.FalconDriveConstants.wheelcircumference;
-    double rightRate = topRightTalon.getSelectedSensorVelocity() * (10.0 / Constants.FalconDriveConstants.cpr) * Constants.FalconDriveConstants.wheelcircumference;
+    double leftRate = topLeftTalon.getSelectedSensorVelocity() * (10.0 / Constants.FalconDriveConstants.cpr)
+        * Constants.FalconDriveConstants.wheelcircumference;
+    double rightRate = topRightTalon.getSelectedSensorVelocity() * (10.0 / Constants.FalconDriveConstants.cpr)
+        * Constants.FalconDriveConstants.wheelcircumference;
 
     return new DifferentialDriveWheelSpeeds(leftRate, rightRate);
   }
@@ -155,18 +166,19 @@ public class DriveTrain extends SubsystemBase {
     m_drive.arcadeDrive(fwd, rot);
   }
 
-    /**
+  /**
    * Stops the left and right sides of the drive directly with voltages.
    */
-  public void tankDriveVoltageStop(){
+  public void tankDriveVoltageStop() {
     this.tankDriveVolts(0, 0);
   }
 
-  public void setBrake(){
+  public void setBrake() {
     frontRightTalon.setNeutralMode(NeutralMode.Brake);
     frontLeftTalon.setNeutralMode(NeutralMode.Brake);
   }
-  public void setCoast(){
+
+  public void setCoast() {
     frontRightTalon.setNeutralMode(NeutralMode.Coast);
     frontLeftTalon.setNeutralMode(NeutralMode.Coast);
   }
@@ -255,6 +267,6 @@ public class DriveTrain extends SubsystemBase {
   }
 
   private double getRightDistance() {
-    return -(topRightTalon.getSelectedSensorPosition()  * FalconDriveConstants.distancePerPulse);
+    return -(topRightTalon.getSelectedSensorPosition() * FalconDriveConstants.distancePerPulse);
   }
 }

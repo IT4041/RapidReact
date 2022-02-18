@@ -29,10 +29,10 @@ public class Indexer extends SubsystemBase {
 
     m_indexerSparkMax.restoreFactoryDefaults();
     m_indexerSparkMax.clearFaults();
-    m_indexerSparkMax.setSmartCurrentLimit(40, 20, 10);
-    m_indexerSparkMax.enableVoltageCompensation(12);
+    // m_indexerSparkMax.setSmartCurrentLimit(40, 20, 10);
+    // m_indexerSparkMax.enableVoltageCompensation(12);
     m_indexerSparkMax.setIdleMode(IdleMode.kBrake);
-    m_indexerSparkMax.setOpenLoopRampRate(1.5);
+    //m_indexerSparkMax.setOpenLoopRampRate(1.0);
 
     SmartDashboard.putBoolean("Auto Indexing", false);
     SmartDashboard.putNumber("Ball Count", 0);
@@ -48,12 +48,13 @@ public class Indexer extends SubsystemBase {
       if (m_RangeSensors.topClear()) {// no high ball so we can index
         
         if (m_RangeSensors.bottomTriggered()) {// we have bottom ball and no top
-          m_indexerSparkMax.set(0.65);// index
+          m_indexerSparkMax.set(0.8);// index
         } else {
           m_indexerSparkMax.set(0.0);// don't index we have no balls
         }
         this.m_bumped = false;
-      } else {
+      } 
+      else {
         // lift has a high ball
         if (!this.m_bumped) { // if we haven't bumperd back already
           this.bumpBack();

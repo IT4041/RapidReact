@@ -13,32 +13,35 @@ import frc.robot.Constants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class IntakeWheels extends SubsystemBase {
 
-  private static final CANSparkMax sparkMax = new CANSparkMax(Constants.IntakeConstants.IntakeWheelsSparkMax, MotorType.kBrushless); 
+  private static final CANSparkMax sparkMaxWheels = new CANSparkMax(Constants.IntakeConstants.IntakeWheelsSparkMax, MotorType.kBrushless); 
+  private static final CANSparkMax sparkMaxFeeder = new CANSparkMax(Constants.IntakeConstants.IntakeFeederSparkMax, MotorType.kBrushless); 
   private boolean wheelsOn;
   /**
    * Creates a new IntakeWheels.
    */ 
   public IntakeWheels(XboxController assist) {
 
-    sparkMax.restoreFactoryDefaults();
-    sparkMax.clearFaults();
-    sparkMax.setInverted(false);
-    sparkMax.setSmartCurrentLimit(40, 20, 10);
-    sparkMax.enableVoltageCompensation(12);
-    sparkMax.setIdleMode(IdleMode.kBrake);
-    sparkMax.setClosedLoopRampRate(1.5);
-    sparkMax.setSecondaryCurrentLimit(120, 30);
+    sparkMaxWheels.restoreFactoryDefaults();
+    sparkMaxWheels.clearFaults();
+    sparkMaxWheels.setInverted(false);
+    sparkMaxWheels.setSmartCurrentLimit(40, 20, 10);
+    sparkMaxWheels.enableVoltageCompensation(12);
+    sparkMaxWheels.setIdleMode(IdleMode.kBrake);
+    sparkMaxWheels.setClosedLoopRampRate(1.0);
+    sparkMaxWheels.setSecondaryCurrentLimit(95, 250);
 
-    sparkMax.setSoftLimit(SoftLimitDirection.kForward, 30);
-    sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-    sparkMax.setSoftLimit(SoftLimitDirection.kReverse, 30);
-    sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
-
+    sparkMaxFeeder.restoreFactoryDefaults();
+    sparkMaxFeeder.clearFaults();
+    sparkMaxFeeder.setInverted(true);
+    sparkMaxFeeder.setSmartCurrentLimit(40, 20, 10);
+    sparkMaxFeeder.enableVoltageCompensation(12);
+    sparkMaxFeeder.setIdleMode(IdleMode.kBrake);
+    sparkMaxFeeder.setClosedLoopRampRate(1.0);
+    sparkMaxFeeder.setSecondaryCurrentLimit(95, 250);
 
     wheelsOn = false; 
   }
@@ -50,16 +53,19 @@ public class IntakeWheels extends SubsystemBase {
   }
 
   public void on(){
-    sparkMax.set(0.85);
+    sparkMaxWheels.set(0.85);
+    sparkMaxFeeder.set(0.7);
     wheelsOn = true;
   }
 
   public void reverse(){
-    sparkMax.set(-0.85);
+    sparkMaxWheels.set(-0.85);
+    sparkMaxFeeder.set(-0.7);
   }
 
   public void off(){
-    sparkMax.set(0.0); 
+    sparkMaxWheels.set(0.0); 
+    sparkMaxFeeder.set(0.0);
     wheelsOn = false;
   }
 

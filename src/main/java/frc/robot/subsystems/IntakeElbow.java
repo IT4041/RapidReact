@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.revrobotics.RelativeEncoder;
@@ -52,17 +53,17 @@ public class IntakeElbow extends SubsystemBase {
     encoder = sparkMax.getEncoder();
     
     // PID coefficients
-    kP = 0.025; 
+    kP = 0.015;
     kI = 0;
-    kD = 0.0001; 
+    kD = 0.005; 
     kIz = 0; 
     kFF = 0; 
     kMaxOutput = 1; 
     kMinOutput = -1;
-    kForwardSoftLimit = 0;
-    kReverseSoftLimit = -90;
+    kForwardSoftLimit = -100;
+    kReverseSoftLimit = 0;
     home = 0;
-    down = kReverseSoftLimit;
+    down = kForwardSoftLimit;
 
     // set PID coefficients
     pidController.setP(kP);
@@ -72,19 +73,20 @@ public class IntakeElbow extends SubsystemBase {
     pidController.setFF(kFF);
     pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    sparkMax.setSoftLimit(SoftLimitDirection.kForward, kForwardSoftLimit);
-    sparkMax.setSoftLimit(SoftLimitDirection.kReverse, kReverseSoftLimit);
+    // sparkMax.setSoftLimit(SoftLimitDirection.kForward, kForwardSoftLimit);
+    // sparkMax.setSoftLimit(SoftLimitDirection.kReverse, kReverseSoftLimit);
 
-    sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-    sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    // sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+    // sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-    sparkMax.setClosedLoopRampRate(0.5);
-    sparkMax.setSmartCurrentLimit(4, 30, 10);
+    sparkMax.setSmartCurrentLimit(40, 20, 10);
     sparkMax.clearFaults();
     sparkMax.enableVoltageCompensation(12);
     sparkMax.setIdleMode(IdleMode.kBrake);
-    sparkMax.setClosedLoopRampRate(1.5);
+    sparkMax.setClosedLoopRampRate(1.0);
     sparkMax.setSecondaryCurrentLimit(95, 250);
+
+    encoder.setPosition(0.0);
 
   }
 
@@ -94,13 +96,17 @@ public class IntakeElbow extends SubsystemBase {
     if (Math.abs(encoder.getPosition() / kReverseSoftLimit) > 0.90){
       done = true;
     }
+
+    SmartDashboard.putNumber("elbow position", encoder.getPosition());
   }
 
   public void home(){
+    System.out.println("home");
     pidController.setReference(home, ControlType.kPosition);
   }
 
   public boolean down(){
+    System.out.println("down");
     pidController.setReference(down, ControlType.kPosition);
     return done;
   }
