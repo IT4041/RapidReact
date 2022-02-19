@@ -119,6 +119,10 @@ public class DriveTrain extends SubsystemBase {
         m_RotEntry.setNumber(rot.getDegrees());
       }
     }
+    else{
+      frontLeftTalon.setNeutralMode(NeutralMode.Brake);
+      frontRightTalon.setNeutralMode(NeutralMode.Brake);
+    }
   }
 
   /**
@@ -162,8 +166,8 @@ public class DriveTrain extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
-  public void arcadeDrive(double fwd, double rot) {
-    m_drive.arcadeDrive(fwd, rot);
+  public void arcadeDrive(double FWD, double ROT) {
+    m_drive.arcadeDrive(ROT*0.5,FWD);
   }
 
   /**

@@ -36,7 +36,7 @@ public class IntakeWheels extends SubsystemBase {
 
     sparkMaxFeeder.restoreFactoryDefaults();
     sparkMaxFeeder.clearFaults();
-    sparkMaxFeeder.setInverted(true);
+    sparkMaxFeeder.setInverted(false);
     sparkMaxFeeder.setSmartCurrentLimit(40, 20, 10);
     sparkMaxFeeder.enableVoltageCompensation(12);
     sparkMaxFeeder.setIdleMode(IdleMode.kBrake);
@@ -54,13 +54,13 @@ public class IntakeWheels extends SubsystemBase {
 
   public void on(){
     sparkMaxWheels.set(0.85);
-    sparkMaxFeeder.set(0.7);
+    sparkMaxFeeder.set(-0.7);
     wheelsOn = true;
   }
 
   public void reverse(){
     sparkMaxWheels.set(-0.85);
-    sparkMaxFeeder.set(-0.7);
+    sparkMaxFeeder.set(0.7);
   }
 
   public void off(){

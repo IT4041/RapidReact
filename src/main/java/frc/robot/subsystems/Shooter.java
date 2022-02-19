@@ -26,8 +26,8 @@ public class Shooter extends SubsystemBase {
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, minRPM;
   private int accumulator = 0;
   private double velocity = 0.0;
-  private double distanceRPMFactor = 117.5;//82.5;// 67.5
-  private double rpmTolerance = 25;
+  private double distanceRPMFactor = 45;
+  private double rpmTolerance = 100;
 
   /**
    * Creates a new Shooter. This subsystem controls the shooter head
@@ -42,8 +42,8 @@ public class Shooter extends SubsystemBase {
     sparkMax1.restoreFactoryDefaults();
     sparkMax2.restoreFactoryDefaults();
 
-    sparkMax1.setIdleMode(IdleMode.kBrake);
-    sparkMax2.setIdleMode(IdleMode.kBrake);
+    sparkMax1.setIdleMode(IdleMode.kCoast);
+    sparkMax2.setIdleMode(IdleMode.kCoast);
 
     sparkMax2.follow(sparkMax1, true);
 
@@ -51,14 +51,14 @@ public class Shooter extends SubsystemBase {
     sparkMax2.enableVoltageCompensation(12);
 
     // PID coefficients
-    kP = 0.000160; // kP = 0.0001;
-    kI = 0;
-    kD = 0.0001;
+    kP = 0.00035; // kP = 0.0001;
+    kI = 0.0;
+    kD = 0.0048;//0.00035;
     kIz = 0;
-    kFF = 0.0001735; // possible value for voltage pid
+    kFF = 0.0001675; // possible value for voltage pid
     kMaxOutput = 1;
     kMinOutput = -1;
-    minRPM = 3825;
+    minRPM = -2000;
 
     // set PID coefficients
     pidController.setP(kP);
@@ -100,22 +100,21 @@ public class Shooter extends SubsystemBase {
   private double calculateRPMs(double distance) {
 
     double finalRPMS;
-    double origin = minRPM;
 
     // calculate rpms
-    finalRPMS = origin + (((distance - 120) / 12) * distanceRPMFactor);
+    finalRPMS = distance * distanceRPMFactor;
 
     // use min rpms if calculated value is below min threshold
     finalRPMS = (finalRPMS < minRPM) ? minRPM : finalRPMS;
-    SmartDashboard.putNumber("Calculated RPMS", finalRPMS);
-    return finalRPMS;
+    SmartDashboard.putNumber("Calculated RPMS", -finalRPMS);
+    return -finalRPMS;
   }
 
   public boolean readyToShoot() {
     boolean atSpeed = false;
     double measuredVelo = encoder.getVelocity();
 
-    if (measuredVelo <= (velocity + rpmTolerance) && measuredVelo >= (velocity - rpmTolerance) && measuredVelo > 3300) {
+    if (measuredVelo <= (this.velocity + rpmTolerance) && measuredVelo >= (this.velocity - this.rpmTolerance) && measuredVelo < -this.minRPM) {
       atSpeed = true;
       accumulator++;
     }
@@ -150,7 +149,9 @@ public class Shooter extends SubsystemBase {
 
     //TODO:restore calculation
     velocity = this.calculateRPMs(distance);
-    // velocity = 3800;
+    
+    
+    
     pidController.setReference(velocity, ControlType.kVelocity);
   }
 

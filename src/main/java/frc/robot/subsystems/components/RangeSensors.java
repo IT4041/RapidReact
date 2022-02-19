@@ -17,10 +17,12 @@ public class RangeSensors extends SubsystemBase {
 
    static double ballThresholdLiftBottom = 200;
    static double ballThresholdLiftTop = 200;
+   static double ballThresholdIntake = 200;
 
   // Create instance of Time-Of_Flight driver for device 1 & 2
   private final TimeOfFlight rangeSensorIndexerBottom = new TimeOfFlight(Constants.RangeSensorConstants.TimeOfFlightLiftBottom);
   private final TimeOfFlight rangeSensorIndexerTop = new TimeOfFlight(Constants.RangeSensorConstants.TimeOfFlightLiftTop);
+  private final TimeOfFlight rangeSensorIntake = new TimeOfFlight(Constants.RangeSensorConstants.TimeOfFlightIntake);
 
   /**
    * Creates a new RangeSensors.
@@ -30,6 +32,7 @@ public class RangeSensors extends SubsystemBase {
     // distance every 5 ms
     rangeSensorIndexerBottom.setRangingMode(RangingMode.Short, 1);
     rangeSensorIndexerTop.setRangingMode(RangingMode.Short, 1);
+    rangeSensorIntake.setRangingMode(RangingMode.Short, 1);
 
     // function can be use to restrict the "field of view" of the sensor
     // rangeSensorIndexerTop.setRangeOfInterest(topLeftX, topLeftY, bottomRightX, bottomRightY);
@@ -41,6 +44,8 @@ public class RangeSensors extends SubsystemBase {
 
     SmartDashboard.putBoolean("rangeSensorLiftBottom triggered?", this.bottomTriggered());
     SmartDashboard.putBoolean("rangeSensorLiftTop clear?", this.topClear());
+    SmartDashboard.putBoolean("rangeSensorIntake triggered?", this.IntakeTriggered());
+
   }
 
   public boolean bottomTriggered(){
@@ -49,6 +54,10 @@ public class RangeSensors extends SubsystemBase {
 
   public boolean topClear(){
     return rangeSensorIndexerTop.getRange() > ballThresholdLiftTop;
+  }
+
+  public boolean IntakeTriggered(){
+    return rangeSensorIntake.getRange() <= ballThresholdIntake;
   }
   
 }

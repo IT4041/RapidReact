@@ -47,7 +47,7 @@ public class Indexer extends SubsystemBase {
     if (this.m_automate) {// true lets the indexer do it's thing
       if (m_RangeSensors.topClear()) {// no high ball so we can index
         
-        if (m_RangeSensors.bottomTriggered()) {// we have bottom ball and no top
+        if (m_RangeSensors.IntakeTriggered()) {// we have bottom ball and no top
           m_indexerSparkMax.set(0.8);// index
         } else {
           m_indexerSparkMax.set(0.0);// don't index we have no balls

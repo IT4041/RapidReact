@@ -77,7 +77,7 @@ public class Constants {
     public static final class FalconDriveConstants {
 
         public static final int FrontRightTalon = 45; // PDP:13
-        public static final int FrontLeftTalon = 46; // PDP:1
+        public static final int FrontLeftTalon = 43; // PDP:1
         public static final int BackRightTalon = 41; // PDP:14
         public static final int BackLeftTalon = 42; // PDP:13
         public static final int TopRightTalon = 40; // PDP:3
@@ -116,6 +116,7 @@ public class Constants {
     }
 
 	public static final class RangeSensorConstants {
+        public static final int TimeOfFlightIntake = 90;
         public static final int TimeOfFlightLiftBottom = 89;
         public static final int TimeOfFlightLiftTop = 88;
     }

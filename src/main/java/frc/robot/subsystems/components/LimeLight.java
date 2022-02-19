@@ -37,6 +37,10 @@ public class LimeLight extends SubsystemBase {
   public final int stream = 2; // sets stream layout if another webcam is attached
   public final int snapshot = 0; // 0 - stop snapshots, 1 - 2 Hz
 
+  private double cameraAngle = 46; // degrees
+  private double cameraHeight = 31; // inches(get correct value from build team)
+  private double targetHeight = 103; // inches (center of targets; targets are 2" tall from 102" to 104")
+
   public LimeLight() {
     // make sure led is off when lime light is initialized
     limelightNT.getEntry("ledMode").setNumber(ledMode);
@@ -65,6 +69,9 @@ public class LimeLight extends SubsystemBase {
     SmartDashboard.putNumber("ta", ta);
     SmartDashboard.putNumber("ty", ty);
     SmartDashboard.putBoolean("HasValidTarget", hasValidTarget());
+
+    SmartDashboard.putNumber("distance: ", this.getDistance());
+
   }
 
   public void ledOn() {
@@ -118,16 +125,11 @@ public class LimeLight extends SubsystemBase {
   public double getDistance() {
     double distance;
     double angle;
-    double cameraAngle = 22; // degrees
-    double cameraHeight = 17.5; // inches(get correct value from build team)
-    double targetHeight = 103; // inches (center of targets; targets are 2" tall from 102" to 104")
 
     // double distance = (targetHeight - cameraHeight) / Math.tan(Math.toRadians(CameraAngle + YOffset))
     angle = Math.tan(Math.toRadians(cameraAngle + ty));
     distance = (targetHeight - cameraHeight) / angle;
 
-    SmartDashboard.putNumber("angle for distance calc: ", angle);
-    SmartDashboard.putNumber("distance based on angle: ", distance);
     return distance;
 
   }

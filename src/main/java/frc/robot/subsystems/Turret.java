@@ -44,7 +44,8 @@ public class Turret extends SubsystemBase {
   private double clicksPerDegree = -2.5;
   private double m_xOffset = 0.0; // x offset reported by limelight
   private final int maxOffset = 180; // Maximum x offset allow
-  private final int tolerance = 3; // clicks off target
+  private final int tolerance = 10; // clicks off target
+  private double error = 2;
 
   public Turret() {
 
@@ -86,6 +87,7 @@ public class Turret extends SubsystemBase {
 
     SmartDashboard.putBoolean("onTarget", this.onTarget());
     SmartDashboard.putBoolean("Aquire Target", this.aquireTarget);
+    SmartDashboard.putNumber("turret error", this.error);
 
     if(aquireTarget){//Bombardier notified turrent to target
       // TrackTarget returns the offset to the target in degrees
@@ -100,7 +102,7 @@ public class Turret extends SubsystemBase {
       // 2.) update pid setpoint to new position
 
       //TODO:restore calculation
-      pidController.setReference(current, ControlType.kPosition);
+      //pidController.setReference(current, ControlType.kPosition);
       
       // 4.) update current positoin to position after adjustment and delay
       current = m_encoder.getPosition();
@@ -144,7 +146,8 @@ public class Turret extends SubsystemBase {
     // is the pid reporting that on the setpoint within the tolerance
     
     //TODO:restore calculation
-    return Math.abs(pidController.getSmartMotionAllowedClosedLoopError(0)) < tolerance;
+    this.error = m_xOffset;
+    return Math.abs(error) < tolerance;
     // return true;
   }
 

@@ -70,7 +70,8 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(
         // A split-stick arcade command, with forward/backward controlled by the left
         // hand, and turning controlled by the right.
-        new RunCommand(() -> driveTrain.arcadeDrive(driver.getLeftX(), -driver.getRightY()), driveTrain));
+                                                          //FWD                   ROT
+        new RunCommand(() -> driveTrain.arcadeDrive(-driver.getRightY(),driver.getLeftX()) , driveTrain));
 
   }
 
@@ -84,7 +85,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // JoystickButton buttonBumperRight_dr = new JoystickButton(driver, Constants.OIConstants.buttonBumperRight);
     JoystickButton buttonA_dr = new JoystickButton(driver, Constants.OIConstants.buttonA);
     JoystickButton buttonY_dr = new JoystickButton(driver, Constants.OIConstants.buttonY);
     JoystickButton buttonSelect_dr = new JoystickButton(driver, Constants.OIConstants.buttonSelect);
@@ -92,9 +92,6 @@ public class RobotContainer {
     
     triggerRight.whenPressed(new InstantCommand(bombardier::targetNoParams,bombardier));
     triggerRight.whenReleased(new InstantCommand(bombardier::stopTargetNoParams,bombardier));
-
-    // buttonBumperRight_dr.whenPressed(new InstantCommand(bombardier::targetNoParams,bombardier));
-    // buttonBumperRight_dr.whenReleased(new InstantCommand(bombardier::stopTargetNoParams,bombardier));
 
     buttonA_dr.whenPressed(new InstantCommand(elevator::up,elevator));
     buttonY_dr.whenPressed(new InstantCommand(elevator::down, elevator));
